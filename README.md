@@ -8,7 +8,6 @@
 - [📖 Sobre](#-Sobre)
 - [🚀 Tecnologias utilizadas](#-Tecnologias-utilizadas)
 - [🖥 Preview](#-Preview)
-- [📌 Créditos](#-Créditos)
 
 ## 📖 Sobre
  - Aula DIO - Requisitando dados de uma API de criptomoedas
