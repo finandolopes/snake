@@ -1,0 +1,129 @@
+<html>
+<head>
+  <style>
+    canvas {
+      border: 1px solid black;
+      background-color: #f0f0f0;
+    }
+    #score {
+      font-family: Arial;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Pontos: 0</div>
+  <canvas id="game" width="400" height="400"></canvas>
+  <script>
+    // Pegar o elemento canvas do HTML
+    const canvas = document.getElementById("game");
+    // Pegar o contexto 2D do canvas
+    const context = canvas.getContext("2d");
+    // Definir o tamanho de cada pixel
+    const pixel = 20;
+    // Definir a velocidade inicial do jogo
+    let speed = 5;
+    // Definir a direção inicial da cobrinha
+    let direction = "right";
+    // Definir a posição inicial da cobrinha
+    let snake = [{x: 10 * pixel, y: 10 * pixel}];
+    // Definir a posição inicial da maçã
+    let apple = {x: Math.floor(Math.random() * 20) * pixel, y: Math.floor(Math.random() * 20) * pixel};
+    // Definir a pontuação inicial do jogo
+    let score = 0;
+    // Definir o nível inicial do jogo
+    let level = 1;
+
+    // Função para desenhar o jogo na tela
+    function drawGame() {
+      // Limpar o canvas
+      context.clearRect(0, 0, 400, 400);
+      // Desenhar a cobrinha
+      for (let i = 0; i < snake.length; i++) {
+        context.fillStyle = "green";
+        context.fillRect(snake[i].x, snake[i].y, pixel, pixel);
+      }
+      // Desenhar a maçã
+      context.fillStyle = "red";
+      context.fillRect(apple.x, apple.y, pixel, pixel);
+      // Desenhar o texto da pontuação
+      context.fillStyle = "black";
+      context.font = "20px Arial";
+      context.fillText("Pontos: " + score, 10, 30);
+      // Desenhar o texto do nível
+      context.fillStyle = "black";
+      context.font = "20px Arial";
+      context.fillText("Nível: " + level, 300, 30);
+    }
+
+    // Função para atualizar o jogo a cada frame
+    function updateGame() {
+      // Pegar a posição da cabeça da cobrinha
+      let headX = snake[0].x;
+      let headY = snake[0].y;
+      // Atualizar a posição da cabeça da cobrinha de acordo com a direção
+      if (direction == "right") headX += pixel;
+      if (direction == "left") headX -= pixel;
+      if (direction == "up") headY -= pixel;
+      if (direction == "down") headY += pixel;
+      // Criar um novo objeto para a nova cabeça da cobrinha
+      let newHead = {x: headX, y: headY};
+      // Verificar se a cobrinha comeu a maçã
+      if (headX == apple.x && headY == apple.y) {
+        // Gerar uma nova posição para a maçã
+        apple.x = Math.floor(Math.random() * 20) * pixel;
+        apple.y = Math.floor(Math.random() * 20) * pixel;
+        // Aumentar a pontuação
+        score++;
+        // Aumentar o nível a cada 10 pontos
+        if (score % 10 == 0) {
+          level++;
+          // Aumentar a velocidade a cada nível
+          speed++;
+        }
+      } else {
+        // Remover o último elemento da cobrinha
+        snake.pop();
+      }
+      // Adicionar a nova cabeça da cobrinha no início do array
+      snake.unshift(newHead);
+      // Verificar se a cobrinha colidiu com as bordas do canvas
+      if (headX < 0 || headX > 380 || headY < 0 || headY > 380) {
+        // Parar o jogo
+        clearInterval(game);
+        // Mostrar uma mensagem de fim de jogo
+        alert("Game Over!");
+        // Reiniciar o jogo
+        location.reload();
+      }
+      // Verificar se a cobrinha colidiu consigo mesma
+      for (let i = 1; i < snake.length; i++) {
+        if (headX == snake[i].x && headY == snake[i].y) {
+          // Parar o jogo
+          clearInterval(game);
+          // Mostrar uma mensagem de fim de jogo
+          alert("Game Over!");
+          // Reiniciar o jogo
+          location.reload();
+        }
+      }
+      // Desenhar o jogo na tela
+      drawGame();
+    }
+
+    // Função para lidar com os eventos de teclado
+    function handleKeyboard(event) {
+      // Verificar se a tecla pressionada é uma das setas
+      if (event.keyCode == 37 && direction != "right") direction = "left";
+      if (event.keyCode == 38 && direction != "down") direction = "up";
+      if (event.keyCode == 39 && direction != "left") direction = "right";
+      if (event.keyCode == 40 && direction != "up") direction = "down";
+    }
+
+    // Adicionar um evento de teclado ao documento
+    document.addEventListener("keydown", handleKeyboard);
+    // Iniciar o jogo com um intervalo de tempo
+    let game = setInterval(updateGame, 1000 / speed);
+  </script>
+</body>
+</html> 
